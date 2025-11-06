@@ -1,4 +1,4 @@
-const postcontroller = {
+const postController = {
     updatePost: async (req, res) => {
         const errorMsgs = joiValidator(
             req.body,
@@ -16,4 +16,4 @@ const postcontroller = {
 
 }
 
-export { postcontroller }
+export { postController }
