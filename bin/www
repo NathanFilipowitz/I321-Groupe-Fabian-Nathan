@@ -4,9 +4,10 @@
  * Module dependencies.
  */
 
-var app = require('../server');
-var debug = require('debug')('i321-groupe-fabian-nathan:server');
-var http = require('http');
+import app from '../server.js'
+import debugModule from 'debug';
+let debug = debugModule('i321-groupe-fabian-nathan:server');
+import http from 'http'
 
 /**
  * Get port from environment and store in Express.
