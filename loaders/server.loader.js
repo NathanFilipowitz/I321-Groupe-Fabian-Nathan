@@ -8,7 +8,7 @@ export default function serverLoader(app) {
     app.use(express.json());
 
     //routes
-    app.use("/api/pizza", pizzaRoutes);
+    app.use("/", pizzaRoutes);
     // app.use("/api/user", userRoutes);
 
     //error handling middleware
