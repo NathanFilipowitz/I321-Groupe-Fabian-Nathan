@@ -14,6 +14,19 @@ const pizzaModel = {
             await db.disconnectToDB(con);
         }
     },
+    findAllPizzasInDb: async (id) => {
+        let con;
+        try {
+            con = await db.connectToDB()
+            const rows = await con.query('SELECT * FROM pizzas');
+            return rows[0];
+        } catch (error) {
+            console.error("Error All pizzas:", error);
+            throw error;
+        } finally {
+            await db.disconnectToDB(con);
+        }
+    }
 };
 
 export default pizzaModel;
