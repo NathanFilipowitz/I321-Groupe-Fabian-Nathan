@@ -1,7 +1,5 @@
 import express from 'express';
 import serverLoader from './loaders/server.loader.js';
-import dotenv from 'dotenv'
-dotenv.config();
 
 // require("dotenv").config({
 //   path: process.env.NODE_ENV ? ".env" : ".env.development",

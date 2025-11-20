@@ -5,7 +5,8 @@ import asyncHandler from "../helpers/asyncRouteHandler.helper.js";
 const router = Router();
 
 // Utilisez le wrapper asyncHandler
-router.get('/:id', asyncHandler(pizzaController.getPizzaController));
+router.get('/', asyncHandler(pizzaController.getAllPizzas));
+router.get('/:id', asyncHandler(pizzaController.getPizzaById));
 
 // router.post("/", asyncHandler(pizzaController.createNewPost));
 // router.put("/",asyncHandler(pizzaController.updatePost));

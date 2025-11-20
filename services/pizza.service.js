@@ -13,6 +13,17 @@ const pizzaService = {
 
         return pizza;
     },
+    getAllPizzas: async () => {
+
+        const pizzas = await pizzaModel.findAllPizzasInDb();
+
+        if (!pizzas) {
+            // throw exceptionGenerator(`La pizza avec l'id ${id} n'existe pas !`, 404);
+            console.log(`Erreur dans serive getAllPizzas:`,pizzas);
+        }
+
+        return pizzas;
+    }
 };
 
 export default pizzaService;

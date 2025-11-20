@@ -2,7 +2,7 @@ import pizzaService from '../services/pizza.service.js';
 import responseSender from '../helpers/responseSender.js';
 
 const pizzaController = {
-    getPizzaController: async (req, res) => {
+    getPizzaById: async (req, res) => {
         const pizzaId = req.params.id;
 
         const pizza = await pizzaService.getPizzaById(pizzaId);
@@ -11,6 +11,12 @@ const pizzaController = {
         return responseSender.sendSuccessResponse(res, pizza, message);
 
     },
+    getAllPizzas: async (req,res) => {
+        const pizzas = await pizzaService.getAllPizzas();
+
+        const message = `Toutes les pizzas ont bien été trouvées`;
+        return responseSender.sendSuccessResponse(res, pizzas, message);
+    }
 };
 
 export default pizzaController;
