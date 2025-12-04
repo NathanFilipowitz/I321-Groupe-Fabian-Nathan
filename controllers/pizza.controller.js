@@ -61,7 +61,8 @@ const pizzaController = {
         return responseSender.sendSuccessResponse(res, ingredients, message);
     },
     createNewIngredient: async (req,res) => {
-        const ingredientName = req.params.name;
+        // For POST requests, data is sent in the request body.
+        const { name: ingredientName } = req.body;
 
         if (!ingredientName) {
             return responseSender.sendErrorResponse(res, "Le nom de l'ingrédient est requis.", 400);
