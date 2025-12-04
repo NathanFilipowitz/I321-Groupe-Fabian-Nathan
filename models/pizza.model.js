@@ -19,10 +19,22 @@ const pizzaModel = {
         try {
             con = await db.connectToDB()
             const rows = await con.query('SELECT * FROM pizzas');
-            console.log(rows[0])
             return rows[0];
         } catch (error) {
             console.error("Error All pizzas:", error);
+            throw error;
+        } finally {
+            await db.disconnectToDB(con);
+        }
+    },
+    findPizzaIdOfTheDayInDb: async () => {
+        let con;
+        try {
+            con = await db.connectToDB()
+            const rows = await con.query('SELECT * FROM pizza_of_the_day');
+            return rows[0]
+        } catch (error) {
+            console.error("Error Id Pizza of the day:", error);
             throw error;
         } finally {
             await db.disconnectToDB(con);

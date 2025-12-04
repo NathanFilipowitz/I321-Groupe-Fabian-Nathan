@@ -23,6 +23,12 @@ const pizzaService = {
         }
 
         return pizzas;
+    },
+    getPizzaIdOfTheDay: async () => {
+
+        const id = await pizzaModel.findPizzaIdOfTheDayInDb();
+
+        return id;
     }
 };
 

@@ -7,6 +7,7 @@ const router = Router();
 // Utilisez le wrapper asyncHandler
 router.get('/pizzas', asyncHandler(pizzaController.getAllPizzas));
 router.get('/pizzas/:id', asyncHandler(pizzaController.getPizzaById));
+router.get('/daily', asyncHandler(pizzaController.getPizzaOfTheDay));
 
 // router.post("/", asyncHandler(pizzaController.createNewPost));
 // router.put("/",asyncHandler(pizzaController.updatePost));

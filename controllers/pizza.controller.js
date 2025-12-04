@@ -16,6 +16,14 @@ const pizzaController = {
 
         const message = `Toutes les pizzas ont bien été trouvées`;
         return responseSender.sendSuccessResponse(res, pizzas, message);
+    },
+    getPizzaOfTheDay: async (req,res) => {
+        const pizzaIdOfTheDay = await pizzaService.getPizzaIdOfTheDay()
+
+        const pizza = await pizzaService.getPizzaById(pizzaIdOfTheDay[0].id);
+
+        const message = `La pizza du jour a bien été trouvée.`;
+        return responseSender.sendSuccessResponse(res, pizza, message);
     }
 };
 
