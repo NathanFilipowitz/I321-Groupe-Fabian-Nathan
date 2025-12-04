@@ -14,11 +14,12 @@ const pizzaModel = {
             await db.disconnectToDB(con);
         }
     },
-    findAllPizzasInDb: async (id) => {
+    findAllPizzasInDb: async () => {
         let con;
         try {
             con = await db.connectToDB()
             const rows = await con.query('SELECT * FROM pizzas');
+            console.log(rows[0])
             return rows[0];
         } catch (error) {
             console.error("Error All pizzas:", error);
