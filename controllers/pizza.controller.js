@@ -72,6 +72,18 @@ const pizzaController = {
 
         const message = `L'ingrédient à bien été crée.`;
         return responseSender.sendSuccessResponse(res, ingredient, message);
+    },
+    createNewPizza: async (req,res) => {
+        const { name: pizzaName, price, is_offer, ingredients: ingredientNames } = req.body;
+
+        if (!pizzaName) {
+            return responseSender.sendErrorResponse(res, "Le nom de la pizza est requis.", 400);
+        }
+
+        const newPizza = await pizzaService.createNewPizza(pizzaName, price, is_offer, ingredientNames);
+
+        const message = `La pizza '${pizzaName}' a bien été créée.`;
+        return responseSender.sendSuccessResponse(res, newPizza, message);
     }
 };
 

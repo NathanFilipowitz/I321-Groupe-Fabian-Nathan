@@ -45,10 +45,22 @@ const pizzaModel = {
         try {
             con = await db.connectToDB()
             const rows = await con.query('SELECT * FROM ingredients where id = ?', [id]);
-            console.log(rows[0])
             return rows[0]
         } catch (error) {
             console.error("Error in ingredients:", error);
+            throw error;
+        } finally {
+            await db.disconnectToDB(con);
+        }
+    },
+    findIngredientByNameInDb: async (name) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const rows = await con.query('SELECT * FROM ingredients WHERE name = ?', [name]);
+            return rows[0];
+        } catch (error) {
+            console.error(`Error fetching ingredient by name: ${name}`, error);
             throw error;
         } finally {
             await db.disconnectToDB(con);
@@ -62,7 +74,7 @@ const pizzaModel = {
             console.log(rows[0])
             return rows[0]
         } catch (error) {
-            console.error("Error Id Pizza of the day:", error);
+            console.error(`Error fetching ingredients for pizza ID ${id}:`, error);
             throw error;
         } finally {
             await db.disconnectToDB(con);
@@ -94,6 +106,34 @@ const pizzaModel = {
             return newIngredient;
         } catch (error) {
             console.error(`Error creating ingredient with name ${name}:`, error);
+            throw error;
+        } finally {
+            await db.disconnectToDB(con);
+        }
+    },
+    createNewPizzaInDb: async (name) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const sql = 'INSERT INTO pizzas (name) VALUES (?)';
+            const result = await con.query(sql, [name]);
+            return result.insertId; // Return the ID of the newly created pizza
+        } catch (error) {
+            console.error(`Error creating pizza with name ${name}:`, error);
+            throw error;
+        } finally {
+            await db.disconnectToDB(con);
+        }
+    },
+    addIngredientToPizzaInDb: async (pizzaId, ingredientId) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const sql = 'INSERT INTO pizzas_has_ingredients (pizzas_id, ingredients_id) VALUES (?, ?)';
+            const result = await con.query(sql, [pizzaId, ingredientId]);
+            return result;
+        } catch (error) {
+            console.error(`Error adding ingredient ${ingredientId} to pizza ${pizzaId}:`, error);
             throw error;
         } finally {
             await db.disconnectToDB(con);

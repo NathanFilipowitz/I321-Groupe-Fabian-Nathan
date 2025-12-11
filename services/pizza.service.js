@@ -51,6 +51,24 @@ const pizzaService = {
     createNewIngredient: async (name) => {
         const newIngredient = await pizzaModel.createNewIngredientInDb(name);
         return newIngredient;
+    },
+    createNewPizza: async (pizzaName, price, is_offer, ingredientNames) => {
+        const ingredientIds = [];
+        for (const name of ingredientNames) {
+            const ingredient = await pizzaModel.findIngredientByNameInDb(name);
+            if (!ingredient) {
+                throw new Error(`L'ingrédient nommé '${name}' n'existe pas.`);
+            }
+            ingredientIds.push(ingredient.id);
+        }
+
+        const newPizzaId = await pizzaModel.createNewPizzaInDb(pizzaName, price, is_offer);
+
+        for (const id of ingredientIds) {
+            await pizzaModel.addIngredientToPizzaInDb(newPizzaId, id);
+        }
+
+        return await pizzaModel.findPizzaByIdInDb(newPizzaId);
     }
 };
 

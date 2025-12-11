@@ -13,6 +13,7 @@ router.get('/ingredients/:id', asyncHandler(pizzaController.getIngredientById));
 router.get('/daily', asyncHandler(pizzaController.getPizzaOfTheDay));
 
 router.post("/ingredients", asyncHandler(pizzaController.createNewIngredient));
+router.post("/pizzas", asyncHandler(pizzaController.createNewPizza));
 // router.put("/",asyncHandler(pizzaController.updatePost));
 // router.delete("/:postId", asyncHandler(pizzaController.deletePost));
 // router.get("/", asyncHandler(pizzaController.getAllUserPosts));
