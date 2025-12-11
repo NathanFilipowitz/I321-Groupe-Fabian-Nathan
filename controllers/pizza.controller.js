@@ -4,12 +4,10 @@ import responseSender from '../helpers/responseSender.js';
 const pizzaController = {
     getPizzaById: async (req, res) => {
         const pizzaId = req.params.id;
-
         const pizza = await pizzaService.getPizzaById(pizzaId);
 
         const message = `La pizza avec l'id ${pizzaId} a bien été trouvé !`;
         return responseSender.sendSuccessResponse(res, pizza, message);
-
     },
     getAllPizzas: async (req,res) => {
         const pizzas = await pizzaService.getAllPizzas();
@@ -61,7 +59,6 @@ const pizzaController = {
         return responseSender.sendSuccessResponse(res, ingredients, message);
     },
     createNewIngredient: async (req,res) => {
-        // For POST requests, data is sent in the request body.
         const { name: ingredientName } = req.body;
 
         if (!ingredientName) {
@@ -84,6 +81,47 @@ const pizzaController = {
 
         const message = `La pizza '${pizzaName}' a bien été créée.`;
         return responseSender.sendSuccessResponse(res, newPizza, message);
+    },
+    deletePizza: async (req,res) => {
+        const pizzaId = req.params.id;
+        const pizza = await pizzaService.getPizzaById(pizzaId);
+
+        if (!pizza || pizza.length === 0) {
+            const err = new Error(`La pizza avec l'ID ${pizzaId} n'existe pas`);
+            err.code = 404;
+            throw err;
+        }
+
+        const deletedPizza = await pizzaService.deletePizzaById(pizzaId);
+
+        if (deletedPizza) {
+            const message = `La pizza '${pizzaId}' a bien été supprimée.`;
+            return responseSender.sendSuccessResponse(res, { id: pizzaId }, message, 200);
+        }
+        const err = new Error(`Erreur dans la suppression de la pizza ${pizzaId}`);
+        err.code = 500;
+        throw err;
+    },
+    deleteIngredient: async (req,res) => {
+        const ingredientId = req.params.id;
+        const ingredient = await pizzaService.getIngredientById(ingredientId);
+
+        if (!ingredientId) {
+            return responseSender.sendErrorResponse(res, "L'ID de l'ingrédient est requis.", 400);
+        }
+        if (ingredient.length <= 0) {
+            return responseSender.sendErrorResponse(res, `L'ingrédient avec l'ID ${ingredientId} n'existe pas`, 404);
+        }
+
+        const deletedPizza = await pizzaService.deleteIngredientById(ingredientId);
+
+        if (deletedPizza) {
+            const message = `La pizza '${ingredientId}' a bien été supprimée.`;
+            return responseSender.sendSuccessResponse(res, ingredientId, message, 200);
+        } else {
+            const message = `Erreur dans la suppression de la pizza ${ingredientId}`;
+            return responseSender.sendErrorResponse(res, message, 400);
+        }
     }
 };
 

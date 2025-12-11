@@ -138,6 +138,58 @@ const pizzaModel = {
         } finally {
             await db.disconnectToDB(con);
         }
+    },
+    deletePizzaInDb: async (id) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const sql = 'DELETE FROM pizzas WHERE id = ?';
+            return await con.query(sql, [id]);
+        } catch (error) {
+            console.error(`Error deleting pizza ${id}: `, error);
+            throw error;
+        } finally {
+            await db.disconnectToDB(con);
+        }
+    },
+    deletePizzaHasIngredientInDb: async (id) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const sql = 'DELETE FROM pizzas_has_ingredients WHERE pizzas_id = ?';
+            return await con.query(sql, [id]);
+        } catch (error) {
+            console.error(`Error deleting pizza ${id}: `, error);
+            throw error;
+        } finally {
+            await db.disconnectToDB(con);
+        }
+    },
+    deleteIngredientInDb: async (id) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const sql = 'DELETE FROM ingredients WHERE id = ?';
+            return await con.query(sql, [id]);
+        } catch (error) {
+            console.error(`Error deleting ingredient ${id}: `, error);
+            throw error;
+        } finally {
+            await db.disconnectToDB(con);
+        }
+    },
+    deleteIngredientHasPizzaInDb: async (id) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const sql = 'DELETE FROM pizzas_has_ingredients WHERE ingredients_id = ?';
+            return await con.query(sql, [id]);
+        } catch (error) {
+            console.error(`Error deleting pizza ${id}: `, error);
+            throw error;
+        } finally {
+            await db.disconnectToDB(con);
+        }
     }
 };
 

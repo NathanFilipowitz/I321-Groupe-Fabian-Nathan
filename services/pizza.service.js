@@ -1,17 +1,9 @@
 import pizzaModel from '../models/pizza.model.js';
-// import { exceptionGenerator } from '../helpers/exception-generator.js';
+import responseSender from "../helpers/responseSender.js";
 
 const pizzaService = {
     getPizzaById: async (id) => {
-
-        const pizza = await pizzaModel.findPizzaByIdInDb(id);
-
-        if (!pizza) {
-            // throw exceptionGenerator(`La pizza avec l'id ${id} n'existe pas !`, 404);
-            console.log(`Erreur [Code: ${id}]:`, pizza);
-        }
-
-        return pizza;
+        return await pizzaModel.findPizzaByIdInDb(id);
     },
     getAllPizzas: async () => {
 
@@ -69,7 +61,41 @@ const pizzaService = {
         }
 
         return await pizzaModel.findPizzaByIdInDb(newPizzaId);
-    }
+    },
+    deletePizzaById: async (id) => {
+        try {
+            const deletedPizzaHasIngredients = await pizzaModel.deletePizzaHasIngredientInDb(id);
+
+            if (deletedPizzaHasIngredients) {
+                const deletedPizza = await pizzaModel.deletePizzaInDb(id);
+
+                if (deletedPizza) {
+                    return true;
+                }
+            }
+            return false;
+
+        } catch (e) {
+            throw new Error(`Erreur dans la suppression de la pizza`);
+        }
+    },
+    deleteIngredientById: async (id) => {
+        try {
+            const deletedIngredientHasPizza = await pizzaModel.deleteIngredientHasPizzaInDb(id);
+
+            if (deletedIngredientHasPizza) {
+                const deletedIngredient = await pizzaModel.deleteIngredientInDb(id);
+
+                if (deletedIngredient) {
+                    return true;
+                }
+            }
+            return false;
+
+        } catch (e) {
+            throw new Error(`Erreur dans la suppression de l'ingrédient`);
+        }
+    },
 };
 
 export default pizzaService;

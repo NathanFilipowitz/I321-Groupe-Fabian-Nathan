@@ -9,7 +9,6 @@ export default function serverLoader(app) {
 
     //routes
     app.use("/", pizzaRoutes);
-    // app.use("/api/user", userRoutes);
 
     //error handling middleware
     app.use(errorHandler);
