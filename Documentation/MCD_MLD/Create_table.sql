@@ -67,6 +67,15 @@ CREATE TABLE IF NOT EXISTS `pizza_api`.`pizzas_has_ingredients` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `pizza_api`.`pizza_of_the_day`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `pizza_api`.`pizza_of_the_day` ;
+
+CREATE TABLE IF NOT EXISTS `pizza_api`.`pizza_of_the_day` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    PRIMARY KEY (`id`))
+ENGINE = InnoDB;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
@@ -112,3 +121,6 @@ INSERT INTO pizzas_has_ingredients (pizzas_id, ingredients_id) VALUES (7, 1), (7
 INSERT INTO pizzas_has_ingredients (pizzas_id, ingredients_id) VALUES (8, 1), (8, 2), (8, 7), (8, 4), (8, 14);
 INSERT INTO pizzas_has_ingredients (pizzas_id, ingredients_id) VALUES (9, 1), (9, 2);
 INSERT INTO pizzas_has_ingredients (pizzas_id, ingredients_id) VALUES (10, 1), (10, 2), (10, 3), (10, 7), (10, 4), (10, 5), (10, 8), (10, 6);
+
+-- Ajout de la pizza du jour en dur
+INSERT INTO pizza_of_the_day (id) VALUES (1);
