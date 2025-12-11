@@ -15,6 +15,6 @@ router.post('/ingredients', asyncHandler(pizzaController.createNewIngredient));
 router.post('/pizzas', asyncHandler(pizzaController.createNewPizza));
 
 router.patch('/pizzas/:id/price', asyncHandler(pizzaController.changePizzaPrice));
-router.patch('/ingredients/:id', asyncHandler(pizzaController.changeIngredientById));
+router.put('/ingredients/:id', asyncHandler(pizzaController.changeIngredientById));
 
 export default router;
