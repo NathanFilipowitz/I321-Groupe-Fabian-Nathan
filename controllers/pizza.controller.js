@@ -103,6 +103,19 @@ const pizzaController = {
 
         const message = `Le prix de la pizza No '${pizzaId}' a bien été changé.`;
         return responseSender.sendSuccessResponse(res, newPricedPizza, message);
+    },
+    changeIngredientById: async (req,res) => {
+        const ingredientId = req.params.id;
+        const {name: newName} = req.body;
+
+        if (newName === undefined) {
+            return responseSender.sendErrorResponse(res, "Le nouveau nom pour l'ingrédient est requis.", 400);
+        }
+
+        const newIngredient = await pizzaService.changeIngredientName(ingredientId, newName);
+
+        const message = `Le nom de l'ingrédient No '${ingredientId}' a bien été changé.`;
+        return responseSender.sendSuccessResponse(res, newIngredient, message);
     }
 };
 
