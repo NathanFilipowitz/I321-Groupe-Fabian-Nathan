@@ -62,6 +62,16 @@ const pizzaService = {
 
         return await pizzaModel.findPizzaByIdInDb(newPizzaId);
     },
+    changePizzaPrice: async (pizzaId, newPrice) => {
+        const newPricedPizza = await pizzaModel.changePizzaPriceByIdInDb(pizzaId, newPrice);
+
+        return await pizzaModel.findPizzaByIdInDb(pizzaId);
+    },
+    changeIngredientName: async (ingredientId, newName) => {
+        await pizzaModel.changeIngredientNameByIdInDb(ingredientId, newName);
+
+        return await pizzaModel.findIngredientByIdInDb(ingredientId);
+    },
     deletePizzaById: async (id) => {
         try {
             const deletedPizzaHasIngredients = await pizzaModel.deletePizzaHasIngredientInDb(id);
