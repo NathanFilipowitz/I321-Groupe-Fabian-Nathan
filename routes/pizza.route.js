@@ -16,11 +16,8 @@ router.post('/pizzas', asyncHandler(pizzaController.createNewPizza));
 
 router.patch('/pizzas/:id/price', asyncHandler(pizzaController.changePizzaPrice));
 router.put('/ingredients/:id', asyncHandler(pizzaController.changeIngredientById));
-router.post("/ingredients", asyncHandler(pizzaController.createNewIngredient));
-router.post("/pizzas", asyncHandler(pizzaController.createNewPizza));
-// router.put("/",asyncHandler(pizzaController.updatePost));
-router.delete("/pizzas/:id", asyncHandler(pizzaController.deletePizza));
-router.delete("/pizzas/:id", asyncHandler(pizzaController.deleteIngredient));
-// router.get("/", asyncHandler(pizzaController.getAllUserPosts));
+
+router.delete('/pizzas/:id', asyncHandler(pizzaController.deletePizza));
+router.delete('/ingredients/:id', asyncHandler(pizzaController.deleteIngredient));
 
 export default router;
