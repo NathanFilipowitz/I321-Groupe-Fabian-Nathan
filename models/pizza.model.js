@@ -138,6 +138,19 @@ const pizzaModel = {
         } finally {
             await db.disconnectToDB(con);
         }
+    },
+    changePizzaPriceByIdInDb: async (pizzaId, newPrice) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            const sql = 'UPDATE pizzas SET price = ? WHERE id = ?';
+            const rows = await con.query(sql, [newPrice, pizzaId])
+            return rows[0]
+        } catch (error) {
+            console.error(`Error changing price of pizza No ${pizzaId} to ${newPrice}:`, error);
+        } finally {
+            await db.disconnectToDB(con);
+        }
     }
 };
 
