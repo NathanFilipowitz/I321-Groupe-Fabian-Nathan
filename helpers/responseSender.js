@@ -8,14 +8,12 @@ const responseSender = {
         }
 
         return res.status(code).send({
-            status: false,
             message: err,
-            errors: [err],
+            // errors: [err],
         });
     },
     sendValidationError: (res, errors) => {
         return res.status(422).send({
-            status: false,
             message: "Validation Failed",
             errors: Array.isArray(errors) ? errors : ["Validation Failed"],
         });
