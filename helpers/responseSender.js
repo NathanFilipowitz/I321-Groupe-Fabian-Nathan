@@ -28,7 +28,6 @@ const responseSender = {
             msg = "API executed successfully";
         }
         return res.status(code).send({
-            status: true,
             message: msg,
             data: data ?? null,
         });
