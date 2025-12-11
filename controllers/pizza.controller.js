@@ -84,6 +84,25 @@ const pizzaController = {
 
         const message = `La pizza '${pizzaName}' a bien été créée.`;
         return responseSender.sendSuccessResponse(res, newPizza, message);
+    },
+    changePizzaPrice: async (req,res) => {
+        const pizzaId = req.params.id;
+        const {price: newPrice} = req.body;
+
+        if (newPrice === undefined) {
+            return responseSender.sendErrorResponse(res, "Le nouveau prix de la Pizza est requis.", 400);
+        }
+        if (typeof newPrice !== 'number' || newPrice <= 0) {
+            return responseSender.sendErrorResponse(res, "Le prix doit être un nombre positif.", 400);
+        }
+        if (Math.round(newPrice * 100) % 5 !== 0) {
+            return responseSender.sendErrorResponse(res, "Le prix doit être arrondi aux 5 centimes.", 400);
+        }
+
+        const newPricedPizza = await pizzaService.changePizzaPrice(pizzaId, newPrice);
+
+        const message = `Le prix de la pizza No '${pizzaId}' a bien été changé.`;
+        return responseSender.sendSuccessResponse(res, newPricedPizza, message);
     }
 };
 
