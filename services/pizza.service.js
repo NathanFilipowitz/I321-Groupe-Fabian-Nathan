@@ -69,6 +69,11 @@ const pizzaService = {
         }
 
         return await pizzaModel.findPizzaByIdInDb(newPizzaId);
+    },
+    changePizzaPrice: async (pizzaId, newPrice) => {
+        const newPricedPizza = await pizzaModel.changePizzaPriceByIdInDb(pizzaId, newPrice);
+
+        return await pizzaModel.findPizzaByIdInDb(pizzaId);
     }
 };
 
