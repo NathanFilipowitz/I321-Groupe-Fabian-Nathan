@@ -1,5 +1,4 @@
 import pizzaModel from '../models/pizza.model.js';
-import responseSender from "../helpers/responseSender.js";
 
 const pizzaService = {
     getPizzaById: async (id) => {
@@ -47,8 +46,14 @@ const pizzaService = {
         return ingredient;
     },
     getIngredientsByPizzaId: async (id) => {
-        await pizzaModel.findPizzaByIdInDb(id);
+        const pizza = await pizzaModel.findPizzaByIdInDb(id);
         const ingredients = await pizzaModel.findIngredientsByPizzaIdInDb(id);
+
+        if (pizza.length === 0) {
+            const err = new Error(`Aucune pizza trouvée`);
+            err.code = 404;
+            throw err;
+        }
 
         if (ingredients.length === 0) {
             const err = new Error(`Aucun ingrédients trouvé`);
