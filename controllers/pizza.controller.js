@@ -7,8 +7,12 @@ const pizzaController = {
 
         const pizza = await pizzaService.getPizzaById(pizzaId);
 
-        const message = `La pizza avec l'id ${pizzaId} a bien été trouvé !`;
-        return responseSender.sendSuccessResponse(pizza, message);
+        if (pizza){
+            const message = `La pizza avec l'id ${pizzaId} a bien été trouvé !`;
+            return responseSender.sendSuccessResponse(pizza, message);
+        } else {
+            
+        }
 
     },
     getAllPizzas: async (req,res) => {
