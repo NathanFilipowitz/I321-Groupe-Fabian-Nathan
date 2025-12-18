@@ -50,7 +50,7 @@ npm --version
 ### Configuration
 
 #### Comment mettre en place la base de donnée ?
-Exécutez le fichier `Documentation/MCD_MLD/Create_table.sql`
+Exécutez le fichier `Documentation/MCD_MLD/Create_table.sql` pour obtenir une base de donnée d'exemple.
 
 ## Déploiement
 1. Créer un fichier `.env` à la racine du dossier avec:
