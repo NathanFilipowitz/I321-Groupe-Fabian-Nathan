@@ -55,11 +55,11 @@ Exécutez le fichier `Documentation/MCD_MLD/Create_table.sql`
 ## Déploiement
 1. Créer un fichier `.env` à la racine du dossier avec:
 ```env
-PORT=
-HOST=
-PSEUDO=
-PASSWORD=
-DATABASE=
+PORT=3000
+HOST=localhost
+PSEUDO=votre_utilisateur
+PASSWORD=votre_mot_de_passe
+DATABASE=nom_bdd
 ```
 
 2. exécutez `npm install`
