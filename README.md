@@ -1,9 +1,9 @@
 # Pizza-API
 ## Description
 
-This project is designed to make API calls on our pizza API app.
+Ce projet à été réalisé pour faire des appels à notre API Pizza (CRUD).
 
-## Prerequisites
+## Pré-requis
 ### Git - version control system (VCS)
 - **Installation** : https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 - **Vérification** :
@@ -49,14 +49,14 @@ npm --version
 
 ### Configuration
 
-#### How to set up the database ?
-Execute the `Create_table.sql`
+#### Comment mettre en place la base de donnée ?
+Exécutez le fichier `Documentation/MCD_MLD/Create_table.sql`
 
-## Deployment
-1. run `npm install`
-2. run `npm run dev`
+## Déploiement
+1. exécutez `npm install`
+2. exécutez `npm run dev`
 
-## Directory structure
+## Structure du dossier
 
 ```shell
 ├───controllers
