@@ -14,8 +14,8 @@ git --version
 ```
 git version 2.51.1
 ```
-### JetBrains WebStrom - Integrated Development Environment (IDE)
-- **Installation** : https://www.jetbrains.com/help/webstorm/installation-guide.html#standalone
+### JetBrains IntelliJ - Integrated Development Environment (IDE)
+- **Installation** : https://www.jetbrains.com/help/idea/installation-guide.html
 - **Vérification** :
 ```bash
 webstorm --version
@@ -53,8 +53,17 @@ npm --version
 Exécutez le fichier `Documentation/MCD_MLD/Create_table.sql`
 
 ## Déploiement
-1. exécutez `npm install`
-2. exécutez `npm run dev`
+1. Créer un fichier `.env` à la racine du dossier avec:
+```env
+PORT=
+HOST=
+PSEUDO=
+PASSWORD=
+DATABASE=
+```
+
+2. exécutez `npm install`
+3. exécutez `npm run dev`
 
 ## Structure du dossier
 
