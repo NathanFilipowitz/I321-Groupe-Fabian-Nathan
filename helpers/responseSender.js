@@ -3,7 +3,7 @@ const responseSender = {
         if (!code) {
             code = 500;
         }
-        if (!err || code === 500) {
+        if (!err) {
             err = "Some unexpected error occur";
         }
 

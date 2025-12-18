@@ -34,17 +34,6 @@ const pizzaService = {
 
         return id;
     },
-    getIngredientById: async (id) => {
-        const ingredient = await pizzaModel.findIngredientByIdInDb(id);
-
-        if (ingredient.length === 0) {
-            const err = new Error(`Aucun ingrédients trouvé`);
-            err.code = 404;
-            throw err;
-        }
-
-        return ingredient;
-    },
     getAllIngredients: async () => {
         const ingredients = await pizzaModel.findAllIngredientsInDb();
 
@@ -100,22 +89,56 @@ const pizzaService = {
         return await pizzaModel.findPizzaByIdInDb(newPizzaId);
     },
     changeIngredientName: async (ingredientId, newName) => {
-        const newIngredients =  pizzaModel.changeIngredientNameByIdInDb(ingredientId, newName);
+        const newIngredients = await pizzaModel.changeIngredientNameByIdInDb(ingredientId, newName);
         const ingredient = await pizzaModel.findIngredientByIdInDb(ingredientId);
 
         if (newIngredients.length === 0) {
-            const err = new Error(`Erreur lors du changement d'ingrédient`);
-            err.code = 404;
+            const err = new Error(`Erreur lors du changement d'ingrédient.`);
+            err.code = 500;
             throw err;
         }
 
         if (ingredient.length === 0) {
-            const err = new Error(`Ingrédient pas trouvé`);
+            const err = new Error(`Nouvel ingrédient pas trouvé.`);
             err.code = 404;
             throw err;
         }
 
         return ingredient;
+    },
+    changePizza: async (isDaily, pizzaId, pizzaNewId = null, name = null, price = null, ingredients = null) => {
+        if (pizzaNewId) {
+            await pizzaModel.changeDailyPizzaInDb(pizzaNewId);
+            return true
+        }
+        if (!pizzaId){
+            pizzaId = await pizzaModel.findDailyPizzaIdInDb();
+        }
+        const changedPizza = await pizzaModel.changePizzaByIdInDb(isDaily, pizzaId, name, price);
+
+        if (ingredients) {
+            await pizzaModel.deletePizzaHasIngredientInDb(pizzaId);
+            for (let ingredient of ingredients) {
+                let existingIngredient = await pizzaModel.findIngredientByNameInDb(ingredient);
+
+                if (existingIngredient.length === 0){
+                    // Ajouter ingrédient si non existant
+                    const ingredientId = await pizzaModel.createNewIngredientInDb(ingredient);
+                    await pizzaModel.addIngredientToPizzaInDb(pizzaId, ingredientId);
+                } else {
+                    // Ajouter ingrédient si existant
+                    await pizzaModel.addIngredientToPizzaInDb(pizzaId, existingIngredient[0].id);
+                }
+            }
+        }
+
+        if (!changedPizza && !ingredients) {
+            const err = new Error("Une modification doit être effectuée.");
+            err.code = 500;
+            throw err;
+        }
+
+        return true
     },
     deletePizzaById: async (id) => {
         const deletedPizzaHasIngredients = await pizzaModel.deletePizzaHasIngredientInDb(id);
@@ -123,7 +146,7 @@ const pizzaService = {
 
         if (deletedPizzaHasIngredients.length === 0) {
             const err = new Error(`Les ingrédients de la pizza avec l'ID ${id} n'ont pas pu être supprimés.`);
-            err.code = 404;
+            err.code = 500;
             throw err;
         }
         if (deletedPizza.length === 0) {
@@ -138,72 +161,20 @@ const pizzaService = {
     deleteIngredientById: async (id) => {
         const deletedIngredientHasPizza = await pizzaModel.deleteIngredientHasPizzaInDb(id);
         const deletedIngredient = await pizzaModel.deleteIngredientInDb(id);
-        if (deletedIngredientHasPizza) {
+
+        if (!deletedIngredientHasPizza) {
             const err = new Error(`Les ingrédients de la pizza avec l'ID ${id} n'ont pas pu être supprimés.`);
-            err.code = 404;
+            err.code = 500;
             throw err;
         }
-        if (deletedIngredient) {
+        if (!deletedIngredient) {
             const err = new Error(`L'ingrédient avec l'ID ${id} n'a pas pu être supprimée car elle n'existe pas.`);
-            err.code = 404;
+            err.code = 500;
             throw err;
         }
 
-        return deletedIngredient;
+        return true;
     },
-    createNewDailyPizza: async (id) => {
-        const newDailyPizza = await pizzaModel.createNewDailyPizza(id);
-
-        if (newDailyPizza.length === 0) {
-            const err = new Error(`L'ID ${id} de la pizza n'existe pas`);
-            err.code = 404;
-            throw err;
-        }
-
-        if (ingredient.length === 0) {
-            const err = new Error(`Ingrédient pas trouvé`);
-            err.code = 404;
-            throw err;
-        }
-
-        return ingredient;
-    },
-    // changePizzaPrice: async (pizzaId, newPrice) => {
-    //     const newPricedPizza = await pizzaModel.changePizzaPriceByIdInDb(pizzaId, newPrice);
-    //     const pizza = await pizzaModel.findPizzaByIdInDb(pizzaId);
-    //
-    //     if (newPricedPizza.length === 0) {
-    //         const err = new Error(`Erreur lors du changement de prix de la pizza`);
-    //         err.code = 404;
-    //         throw err;
-    //     }
-    //
-    //     if (pizza.length === 0) {
-    //         const err = new Error(`Aucune pizza trouvée`);
-    //         err.code = 404;
-    //         throw err;
-    //     }
-    //
-    //     return pizza;
-    // },
-    // getIngredientsByPizzaId: async (id) => {
-    //     const pizza = await pizzaModel.findPizzaByIdInDb(id);
-    //     const ingredients = await pizzaModel.findIngredientsByPizzaIdInDb(id);
-    //
-    //     if (pizza.length === 0) {
-    //         const err = new Error(`Aucune pizza trouvée`);
-    //         err.code = 404;
-    //         throw err;
-    //     }
-    //
-    //     if (ingredients.length === 0) {
-    //         const err = new Error(`Aucun ingrédients trouvé à la pizza`);
-    //         err.code = 404;
-    //         throw err;
-    //     }
-    //
-    //     return ingredients;
-    // },
 };
 
 export default pizzaService;

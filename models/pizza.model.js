@@ -32,7 +32,12 @@ const pizzaModel = {
         try {
             con = await db.connectToDB()
             const [rows] = await con.query('SELECT * FROM pizzas WHERE is_offer = 1');
-            return rows[0]['id'];
+            if (rows.length === 0) {
+                const err = new Error(`Aucune pizza du jour n'a été trouvée.`);
+                err.code = 404;
+                throw err;
+            }
+            return rows[0].id;
         } catch (error) {
             console.error("Error Id Pizza of the day:", error);
             throw error;
@@ -57,7 +62,10 @@ const pizzaModel = {
         let con;
         try {
             con = await db.connectToDB();
-            const [rows] = await con.query('SELECT * FROM ingredients WHERE name = ?', [name]);
+            const nameSearch = `'${name}'`
+            const sql = 'SELECT * FROM ingredients WHERE name LIKE ' + nameSearch + ';';
+            const [rows] = await con.query(sql);
+
             return rows;
         } catch (error) {
             console.error(`Error fetching ingredient by name: ${name}`, error);
@@ -66,24 +74,12 @@ const pizzaModel = {
             await db.disconnectToDB(con);
         }
     },
-    findIngredientsByPizzaIdInDb: async (id) => {
-        let con;
-        try {
-            con = await db.connectToDB()
-            const [rows] = await con.query('SELECT * FROM pizzas_has_ingredients where pizzas_id = ?',[id]);
-            return rows;
-        } catch (error) {
-            console.error(`Error fetching ingredients for pizza ID ${id}:`, error);
-            throw error;
-        } finally {
-            await db.disconnectToDB(con);
-        }
-    },
-    findAllIngredientsInDb: async (id) => {
+    findAllIngredientsInDb: async () => {
         let con;
         try {
             con = await db.connectToDB()
             const [rows] = await con.query('SELECT * FROM ingredients');
+
             return rows;
         } catch (error) {
             console.error("Error in ingredients:", error);
@@ -98,7 +94,6 @@ const pizzaModel = {
             con = await db.connectToDB();
             const sql = 'INSERT INTO ingredients (name) VALUES (?)';
             const [result] = await con.query(sql, [name]);
-
             // const newIngredient = await pizzaModel.findIngredientByIdInDb(result.insertId);
             return result.insertId;
         } catch (error) {
@@ -108,12 +103,13 @@ const pizzaModel = {
             await db.disconnectToDB(con);
         }
     },
-    createNewPizzaInDb: async (name) => {
+    createNewPizzaInDb: async (name, price, is_offer) => {
         let con;
         try {
             con = await db.connectToDB();
-            const sql = 'INSERT INTO pizzas (name) VALUES (?)';
-            const [rows] = await con.query(sql, [name]);
+            const sql = 'INSERT INTO pizzas (name, price, is_offer) VALUES (?, ?, ?)';
+            const [rows] = await con.query(sql, [name, price, is_offer]);
+
             return rows.insertId;
         } catch (error) {
             console.error(`Error creating pizza with name ${name}:`, error);
@@ -128,6 +124,7 @@ const pizzaModel = {
             con = await db.connectToDB();
             const sql = 'INSERT INTO pizzas_has_ingredients (pizzas_id, ingredients_id) VALUES (?, ?)';
             const [rows] = await con.query(sql, [pizzaId, ingredientId]);
+
             return rows;
         } catch (error) {
             console.error(`Error adding ingredient ${ingredientId} to pizza ${pizzaId}:`, error);
@@ -136,28 +133,64 @@ const pizzaModel = {
             await db.disconnectToDB(con);
         }
     },
-    // changePizzaPriceByIdInDb: async (pizzaId, newPrice) => {
-    //     let con;
-    //     try {
-    //         con = await db.connectToDB();
-    //         const sql = 'UPDATE pizzas SET price = ? WHERE id = ?';
-    //         const [rows] = await con.query(sql, [newPrice, pizzaId])
-    //         return rows.changedRows;
-    //     } catch (error) {
-    //         console.error(`Error changing price of pizza No ${pizzaId} to ${newPrice}:`, error);
-    //     } finally {
-    //         await db.disconnectToDB(con);
-    //     }
-    // },
     changeIngredientNameByIdInDb: async (ingredientId, newName) => {
         let con;
         try {
             con = await db.connectToDB();
             const sql = 'UPDATE ingredients SET name = ? WHERE id = ?';
             const [rows] = await con.query(sql, [newName, ingredientId])
+
             return rows.changedRows;
         } catch (error) {
             console.error(`Error changing the name of ingredient No ${ingredientId} to ${newName}:`, error);
+        } finally {
+            await db.disconnectToDB(con);
+        }
+    },
+    changePizzaByIdInDb: async (isDaily, id, name = null, price = null) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            let sql = 'UPDATE pizzas SET';
+            let params = [];
+
+            if (name) {
+                sql += " name = ?";
+                params.push(name);
+            }
+            if (price) {
+                sql += ", price = ?";
+                params.push(price);
+            }
+            if (isDaily) {
+                sql += " WHERE is_offer = 1";
+            } else {
+                sql += " WHERE id = ?";
+                params.push(id);
+            }
+            const [rows] = await con.query(sql, params);
+            return rows.changedRows;
+        } catch (error) {
+            console.error(`Error changing the daily pizza ${name}:`, error);
+        } finally {
+            await db.disconnectToDB(con);
+        }
+    },
+    changeDailyPizzaInDb: async (id) => {
+        let con;
+        try {
+            con = await db.connectToDB();
+            // Remove old offer
+            const oldSql = 'UPDATE pizzas set is_offer = 0 WHERE is_offer = 1';
+            await con.query(oldSql);
+
+            // Add new offer
+            const newSql = 'UPDATE pizzas set is_offer = 1 WHERE id = ?';
+            const [newRows] = await con.query(newSql, [id]);
+            return newRows;
+        } catch (error) {
+            console.error(`Error updating daily pizza ${id}: `, error);
+            throw error;
         } finally {
             await db.disconnectToDB(con);
         }
@@ -196,7 +229,7 @@ const pizzaModel = {
             con = await db.connectToDB();
             const sql = 'DELETE FROM ingredients WHERE id = ?';
             const [rows] = await con.query(sql, [id]);
-            return rows;
+            return rows.affectedRows;
         } catch (error) {
             console.error(`Error deleting ingredient ${id}: `, error);
             throw error;
@@ -210,7 +243,7 @@ const pizzaModel = {
             con = await db.connectToDB();
             const sql = 'DELETE FROM pizzas_has_ingredients WHERE ingredients_id = ?';
             const [rows] = await con.query(sql, [id]);
-            return rows
+            return rows.affectedRows;
         } catch (error) {
             console.error(`Error deleting pizza ${id}: `, error);
             throw error;
@@ -218,20 +251,6 @@ const pizzaModel = {
             await db.disconnectToDB(con);
         }
     },
-    // createNewDailyPizza: async (id) => {
-    //     let con;
-    //     try {
-    //         con = await db.connectToDB();
-    //         const sql = 'DELETE FROM pizzas_has_ingredients WHERE ingredients_id = ?';
-    //         const [rows] = await con.query(sql, [id]);
-    //         return rows
-    //     } catch (error) {
-    //         console.error(`Error deleting pizza ${id}: `, error);
-    //         throw error;
-    //     } finally {
-    //         await db.disconnectToDB(con);
-    //     }
-    // }
 };
 
 export default pizzaModel;
