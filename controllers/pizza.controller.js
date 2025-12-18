@@ -15,10 +15,10 @@ const pizzaController = {
         const message = `Toutes les pizzas ont bien été trouvées`;
         return responseSender.sendSuccessResponse(res, pizzas, message);
     },
-    getPizzaOfTheDay: async (req,res) => {
-        const pizzaIdOfTheDay = await pizzaService.getDailyPizzaId()
+    getDailyPizza: async (req,res) => {
+        const dailyPizzaId = await pizzaService.getDailyPizzaId()
 
-        const pizza = await pizzaService.getPizzaById(pizzaIdOfTheDay[0].id);
+        const pizza = await pizzaService.getPizzaById(dailyPizzaId);
 
         const message = `La pizza du jour a bien été trouvée.`;
         return responseSender.sendSuccessResponse(res, pizza, message);
@@ -34,13 +34,13 @@ const pizzaController = {
 
         const ingredient = await pizzaService.createNewIngredient(ingredientName);
 
-        const message = `L'ingrédient à bien été crée.`;
+        const message = `L'ingrédient ${ingredientName} à bien été crée.`;
         return responseSender.sendSuccessResponse(res, ingredient, message);
     },
     createNewPizza: async (req,res) => {
-        const { name: pizzaName, price, is_offer, ingredients: ingredientNames } = req.body;
+        const { name: pizzaName, price, ingredients: ingredientNames } = req.body;
 
-        const newPizza = await pizzaService.createNewPizza(pizzaName, price, is_offer, ingredientNames);
+        const newPizza = await pizzaService.createNewPizza(pizzaName, price, ingredientNames);
 
         const message = `La pizza '${pizzaName}' a bien été créée.`;
         return responseSender.sendSuccessResponse(res, newPizza, message);
@@ -96,7 +96,7 @@ const pizzaController = {
         } else if (changedPizza) {
             message = `La pizza ${pizzaId} a bien été modifiée.`;
         }
-        return responseSender.sendSuccessResponse(res, pizzaId, message);
+        return responseSender.sendSuccessResponse(res, changedPizza, message);
     },
 };
 

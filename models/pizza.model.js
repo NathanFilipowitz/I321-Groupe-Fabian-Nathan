@@ -103,12 +103,12 @@ const pizzaModel = {
             await db.disconnectToDB(con);
         }
     },
-    createNewPizzaInDb: async (name, price, is_offer) => {
+    createNewPizzaInDb: async (name, price) => {
         let con;
         try {
             con = await db.connectToDB();
-            const sql = 'INSERT INTO pizzas (name, price, is_offer) VALUES (?, ?, ?)';
-            const [rows] = await con.query(sql, [name, price, is_offer]);
+            const sql = 'INSERT INTO pizzas (name, price, is_offer) VALUES (?, ?, 0)';
+            const [rows] = await con.query(sql, [name, price]);
 
             return rows.insertId;
         } catch (error) {

@@ -7,7 +7,7 @@ const router = Router();
 router.get('/pizzas', asyncHandler(pizzaController.getAllPizzas));
 router.get('/pizzas/:id', asyncHandler(pizzaController.getPizzaById));
 router.get('/ingredients', asyncHandler(pizzaController.getAllIngredients));
-router.get('/pizza-du-jour', asyncHandler(pizzaController.getPizzaOfTheDay));
+router.get('/pizza-du-jour', asyncHandler(pizzaController.getDailyPizza));
 
 router.post('/pizzas', asyncHandler(pizzaController.createNewPizza));
 router.post('/ingredients', asyncHandler(pizzaController.createNewIngredient));

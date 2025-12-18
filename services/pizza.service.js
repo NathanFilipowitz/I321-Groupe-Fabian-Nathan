@@ -56,7 +56,7 @@ const pizzaService = {
 
         return newIngredient;
     },
-    createNewPizza: async (pizzaName, price, is_offer, ingredientNames) => {
+    createNewPizza: async (pizzaName, price, ingredientNames) => {
         if (!pizzaName) {
             const err = new Error(`Le nom de la pizza est requis.`);
             err.code = 400;
@@ -76,11 +76,11 @@ const pizzaService = {
                 }
                 ingredientIds.push(newIngredient);
             } else {
-                ingredientIds.push(ingredient.id);
+                ingredientIds.push(ingredient[0].id);
             }
         }
 
-        const newPizzaId = await pizzaModel.createNewPizzaInDb(pizzaName, price, is_offer);
+        const newPizzaId = await pizzaModel.createNewPizzaInDb(pizzaName, price);
 
         for (const id of ingredientIds) {
             await pizzaModel.addIngredientToPizzaInDb(newPizzaId, id);
@@ -138,7 +138,7 @@ const pizzaService = {
             throw err;
         }
 
-        return true
+        return changedPizza;
     },
     deletePizzaById: async (id) => {
         const deletedPizzaHasIngredients = await pizzaModel.deletePizzaHasIngredientInDb(id);
