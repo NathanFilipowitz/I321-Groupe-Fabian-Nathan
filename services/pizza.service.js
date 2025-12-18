@@ -169,7 +169,7 @@ const pizzaService = {
         }
         if (!deletedIngredient) {
             const err = new Error(`L'ingrédient avec l'ID ${id} n'a pas pu être supprimée car elle n'existe pas.`);
-            err.code = 500;
+            err.code = 404;
             throw err;
         }
 
